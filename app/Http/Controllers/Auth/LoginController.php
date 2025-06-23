@@ -6,11 +6,17 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+use App\Models\Post;
+
 class LoginController extends Controller
 {
     // Show login form
     public function showLoginForm()
     {
+        // If already logged in, redirect to dashboard
+        if (Auth::check()) {
+            return redirect()->route('admin.post.index');
+        }
         return view('auth.login'); // resources/views/auth/login.blade.php
     }
 
@@ -26,7 +32,10 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
-            return redirect()->intended('/dashboard'); // or your desired route
+            // Arahkan ke rute bernama, BUKAN view langsung
+            return redirect()->intended(route('admin.post.index'));
+            // intended() mengembalikan user ke halaman yang awalnya diminta,
+            // atau ke route kita kalau tidak ada halaman sebelumnya.
         }
 
         return back()->withErrors([
@@ -41,6 +50,6 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/login');
+        return redirect('/admin/login');
     }
 }
