@@ -11,6 +11,16 @@
      <!-- Divider -->
      <hr class="sidebar-divider my-0">
 
+     <!-- Nav Item - Dashboard -->
+     <li class="nav-item active">
+         <a class="nav-link" href="/admin/dashboard">
+             <i class="fas fa-fw fa-tachometer-alt"></i>
+             <span>Dashboard</span></a>
+     </li>
+
+     <!-- Divider -->
+     <hr class="sidebar-divider">
+
      <!-- Nav Item - Tables -->
      <li class="nav-item active">
          <a class="nav-link" href="/admin/post">
@@ -20,7 +30,7 @@
 
      <!-- Nav Item - Tables -->
      <li class="nav-item active">
-         <a class="nav-link" href="tables.html">
+         <a class="nav-link" href="/admin/product">
              <i class="fas fa-fw fa-box"></i>
              <span>Product</span></a>
      </li>

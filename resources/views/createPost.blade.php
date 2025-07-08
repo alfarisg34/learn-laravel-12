@@ -1,30 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>SB Admin 2 - Tables</title>
-
-    <!-- Custom fonts for this template -->
-    <link href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
-
-    <!-- Custom styles for this template -->
-    <link href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet">
-
-    <!-- Custom styles for this page -->
-    <link href="{{ asset('vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
-
-</head>
-
+@include('admin.head')
 
 <body id="page-top">
 
@@ -76,6 +53,11 @@
                                 {{-- Picture --}}
                                 <div class="mb-3">
                                     <label for="picture" class="form-label">Picture</label>
+                                    <!-- Image Preview Area -->
+                                    <div class="mb-3">
+                                        <img id="preview-image" src="#" alt="Preview"
+                                            style="display: none; max-height: 200px;" class="mb-2 rounded">
+                                    </div>
                                     <input type="file" id="picture" name="picture" accept="image/*"
                                         class="form-control @error('picture') is-invalid @enderror" required>
                                     @error('picture')
@@ -83,31 +65,36 @@
                                     @enderror
                                 </div>
 
+                                <!-- JavaScript for Preview -->
+                                <script>
+                                    document.getElementById('picture').addEventListener('change', function(event) {
+                                        const input = event.target;
+                                        const preview = document.getElementById('preview-image');
+                                        const file = input.files[0];
+
+                                        if (file && file.type.startsWith('image/')) {
+                                            const reader = new FileReader();
+                                            reader.onload = function(e) {
+                                                preview.src = e.target.result;
+                                                preview.style.display = 'block';
+                                            };
+                                            reader.readAsDataURL(file);
+                                        } else {
+                                            preview.src = '#';
+                                            preview.style.display = 'none';
+                                        }
+                                    });
+                                </script>
+
                                 {{-- Description --}}
                                 <div class="mb-3">
                                     <label for="desc" class="form-label">Description</label>
                                     <textarea id="desc" name="desc" rows="5" class="form-control @error('desc') is-invalid @enderror"
-                                        oninput="autoResize(this)" required>{{ old('desc') }}</textarea>
+                                        required>{{ old('desc') }}</textarea>
                                     @error('desc')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-
-                                <script>
-                                    function autoResize(textarea) {
-                                        // Reset height to original to recalculate
-                                        textarea.style.height = 'auto';
-                                        // Set height based on scrollHeight
-                                        textarea.style.height = textarea.scrollHeight + 'px';
-                                    }
-
-                                    // Trigger on page load if there's already text (like old('desc'))
-                                    window.addEventListener('DOMContentLoaded', function() {
-                                        const desc = document.getElementById('desc');
-                                        autoResize(desc);
-                                    });
-                                </script>
-
                                 <button type="submit" class="btn btn-primary">Save</button>
                             </form>
                         </div>

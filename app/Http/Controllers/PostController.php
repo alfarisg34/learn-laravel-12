@@ -61,7 +61,7 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        //
+        return view('updatePost', compact('post'));
     }
 
     /**
@@ -69,7 +69,21 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'desc' => 'required|string',
+            'picture' => 'nullable|image',
+            // …
+        ]);
+
+        if ($request->hasFile('picture')) {
+            $validated['picture'] = $request->file('picture')->store('posts', 'public');
+        }
+
+        $post->update($validated);
+
+        return redirect()->route('admin.post.index')
+            ->with('success', 'Post updated successfully.');
     }
 
     /**
@@ -77,6 +91,9 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        $post->delete();
+
+        return redirect()->route('admin.post.index')
+            ->with('success', 'Post deleted successfully.');
     }
 }

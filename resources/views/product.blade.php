@@ -1,6 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-@include('admin.head')
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Admin</title>
+
+    <!-- Custom fonts for this template -->
+    <link href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet">
+
+    <link href="{{ asset('images/logoUmkm.png') }}" rel="icon">
+
+    <!-- Custom styles for this page -->
+    <link href="{{ asset('vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
+
+</head>
+
 
 <body id="page-top">
 
@@ -26,8 +52,8 @@
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                            <h6 class="m-0 font-weight-bold text-primary">Posts</h6>
-                            <a href="{{ route('createPost') }}" class="btn btn-outline-primary btn-sm">Add New</a>
+                            <h6 class="m-0 font-weight-bold text-primary">Products</h6>
+                            <a href="{{ route('createProduct') }}" class="btn btn-outline-primary btn-sm">Add New</a>
                         </div>
 
                         <div class="card-body">
@@ -37,9 +63,13 @@
                                         <tr>
                                             <th>Title</th>
                                             <th>Description</th>
+                                            <th style="width: 20px">Status</th>
                                             {{-- <th style="width: 50px">Last Edited By</th> --}}
+                                            <th style="width: 20px">Category</th>
+                                            {{-- <th style="width: 20px">Location</th> --}}
                                             <th style="width: 20px">Updated Date</th>
                                             <th style="width: 20px">Created Date</th>
+                                            {{-- <th style="width: 20px">Valid Until</th> --}}
                                             <th style="width: 30px;">Actions</th>
                                         </tr>
                                     </thead>
@@ -47,48 +77,60 @@
                                         <tr>
                                             <th>Title</th>
                                             <th>Description</th>
+                                            <th>Status</th>
                                             {{-- <th>Last Edited By</th> --}}
+                                            <th>Category</th>
+                                            {{-- <th>Location</th> --}}
                                             <th>Updated Date</th>
                                             <th>Created Date</th>
+                                            {{-- <th>Valid Until</th> --}}
                                             <th>Actions</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
-                                        @foreach ($posts as $post)
+                                        @foreach ($products as $product)
                                             <tr>
-                                                {{-- Str::limit gives a server‑side fallback in case CSS is disabled --}}
                                                 <td style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
-                                                    title="{{ $post->title }}">
-                                                    <a href="{{ route('articles.show', $post->id) }}"
+                                                    title="{{ $product->title }}">
+                                                    <a href="{{ route('product.show', $product->id) }}"
                                                         style="color: blue; text-decoration: underline;" target="_blank"
                                                         rel="noopener noreferrer">
-                                                        {{ Str::limit($post->title, 80) }}
+                                                        {{ Str::limit($product->title, 80) }}
                                                     </a>
                                                 </td>
 
                                                 @php
-                                                    $shortHtml = Str::limit(strip_tags($post->desc), 120); // no HTML inside cell
+                                                    $shortHtml = Str::limit(strip_tags($product->desc), 120); // no HTML inside cell
                                                 @endphp
                                                 <td style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
-                                                    title="{{ strip_tags($post->desc) }}">
+                                                    title="{{ strip_tags($product->desc) }}">
                                                     {{ $shortHtml }}
                                                 </td>
-                                                {{-- <td>{{ $post->editor?->name ?? '—' }}</td> --}}
-                                                <td>{{ $post->updated_at->tz('Asia/Jakarta')->format('d/m/y H:i') }}
+                                                <td>
+                                                    @if ($product->status)
+                                                        <span class="badge bg-success">Active</span>
+                                                    @else
+                                                        <span class="badge bg-danger">Not Active</span>
+                                                    @endif
                                                 </td>
-                                                <td>{{ $post->created_at->tz('Asia/Jakarta')->format('d/m/y H:i') }}
+                                                {{-- <td>{{ $product->editor?->name ?? '—' }}</td> --}}
+                                                <td>{{ $product->category?->name ?? '—' }}</td>
+                                                {{-- <td>{{ $product->village_name  ?? '—' }}</td> --}}
+                                                <td>{{ $product->updated_at->tz('Asia/Jakarta')->format('d/m/y H:i') }}
                                                 </td>
+                                                <td>{{ $product->created_at->tz('Asia/Jakarta')->format('d/m/y H:i') }}
+                                                </td>
+                                                {{-- <td>{{ $product->deactivate_at->tz('Asia/Jakarta')->format('d/m/y H:i') }}
+                                                </td> --}}
                                                 <td class="text-nowrap">
-                                                    {{-- Edit button --}}
-                                                    <a href="{{ route('post.edit', $post) }}"
+                                                    <a href="{{ route('product.edit', $product) }}"
                                                         class="btn btn-sm btn-outline-primary me-1">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
 
-                                                    {{-- Delete button --}}
-                                                    <form action="{{ route('admin.post.destroy', $post) }}"
+                                                    <form action="{{ route('admin.product.destroy', $product) }}"
                                                         method="POST" class="d-inline"
-                                                        onsubmit="return confirm('Delete this post permanently?');">
+                                                        onsubmit="return confirm('Delete this product permanently?');">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-sm btn-outline-danger">

@@ -1,29 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>SB Admin 2 - Tables</title>
-
-    <!-- Custom fonts for this template -->
-    <link href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
-
-    <!-- Custom styles for this template -->
-    <link href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet">
-
-    <!-- Custom styles for this page -->
-    <link href="{{ asset('vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
-
-</head>
+@include('admin.head')
 
 
 <body id="page-top">
@@ -55,19 +33,34 @@
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                            <h6 class="m-0 font-weight-bold text-primary">Create Posts</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">Edit Post</h6>
                             <a href="/admin/post" class="btn btn-outline-primary btn-sm">← Back</a>
                         </div>
 
                         <div class="card-body">
-                            <form action="/admin/post/create" method="POST" enctype="multipart/form-data"
-                                class="needs-validation" novalidate>
+                            {{-- resources/views/admin/posts/_form.blade.php --}}
+                            <form action="{{ isset($post)
+                                        ? route('admin.post.update', $post)   {{-- edit mode --}}
+                                        : route('admin.posts.store') }}"       {{-- create mode --}}
+                                method="POST"
+                                enctype="multipart/form-data"
+                                class="needs-validation"
+                                novalidate>
+
                                 @csrf
+                                @isset($post)  {{-- PUT/PATCH is only needed when updating --}}
+                                    @method('PUT')
+                                @endisset
+
                                 {{-- Title --}}
                                 <div class="mb-3">
                                     <label for="title" class="form-label">Title</label>
-                                    <input type="text" id="title" name="title" value="{{ old('title') }}"
-                                        class="form-control @error('title') is-invalid @enderror" required>
+                                    <input  type="text"
+                                            id="title"
+                                            name="title"
+                                            value="{{ old('title', $post->title ?? '') }}"
+                                            class="form-control @error('title') is-invalid @enderror"
+                                            required>
                                     @error('title')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -76,24 +69,100 @@
                                 {{-- Picture --}}
                                 <div class="mb-3">
                                     <label for="picture" class="form-label">Picture</label>
-                                    <input type="file" id="picture" name="picture" accept="image/*"
-                                        class="form-control @error('picture') is-invalid @enderror" required>
+                                    {{-- Current thumbnail (only when editing) --}}
+                                    @isset($post->picture)
+                                        <div id="current-thumb-wrapper" class="mb-2">
+                                            <img id="current-thumb"
+                                                src="{{ asset('storage/' . $post->picture) }}"
+                                                alt="Current picture"
+                                                class="img-fluid rounded"
+                                                style="max-height: 150px;">
+                                        </div>
+                                    @endisset
+
+                                    {{-- Live preview for the NEW upload --}}
+                                    <div class="mb-3">
+                                        <img id="preview-image"
+                                            src="#"
+                                            alt="Preview"
+                                            style="display: none; max-height: 200px;"
+                                            class="mb-2 rounded">
+                                    </div>
+
+                                    <input  type="file"
+                                            id="picture"
+                                            name="picture"
+                                            accept="image/*"
+                                            class="form-control @error('picture') is-invalid @enderror"
+                                            @empty($post) required @endempty>
+
                                     @error('picture')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
 
+
+                                <!-- JavaScript for Preview -->
+                                <script>
+                                    document.getElementById('picture').addEventListener('change', function(event) {
+                                        const input = event.target;
+                                        const preview = document.getElementById('preview-image');
+                                        const file = input.files[0];
+
+                                        if (file && file.type.startsWith('image/')) {
+                                            const reader = new FileReader();
+                                            reader.onload = function(e) {
+                                                preview.src = e.target.result;
+                                                preview.style.display = 'block';
+                                            };
+                                            reader.readAsDataURL(file);
+                                        } else {
+                                            preview.src = '#';
+                                            preview.style.display = 'none';
+                                        }
+                                    });
+                                </script>
+
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', () => {
+                                        const input   = document.getElementById('picture');
+                                        const preview = document.getElementById('preview-image');
+                                        const oldWrap = document.getElementById('current-thumb-wrapper');
+
+                                        input.addEventListener('change', e => {
+                                            if (e.target.files && e.target.files[0]) {
+                                                // show new preview
+                                                const reader = new FileReader();
+                                                reader.onload = ev => {
+                                                    preview.src   = ev.target.result;
+                                                    preview.style.display = 'block';
+                                                };
+                                                reader.readAsDataURL(e.target.files[0]);
+
+                                                // hide old thumbnail (if present)
+                                                if (oldWrap) oldWrap.style.display = 'none';
+                                            }
+                                        });
+                                    });
+                                    </script>
+
+
                                 {{-- Description --}}
                                 <div class="mb-3">
                                     <label for="desc" class="form-label">Description</label>
-                                    <textarea id="desc" name="desc" rows="5" class="form-control @error('desc') is-invalid @enderror"
-                                        required>{{ old('desc') }}</textarea>
+                                    <textarea id="desc"
+                                            name="desc"
+                                            rows="5"
+                                            class="form-control @error('desc') is-invalid @enderror"
+                                            required>{{ old('desc', $post->desc ?? '') }}</textarea>
                                     @error('desc')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
 
-                                <button type="submit" class="btn btn-primary">Save</button>
+                                <button type="submit" class="btn btn-primary">
+                                    {{ isset($post) ? 'Update' : 'Save' }}
+                                </button>
                             </form>
                         </div>
                     </div>

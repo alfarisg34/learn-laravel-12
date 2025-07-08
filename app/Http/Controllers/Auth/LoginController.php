@@ -15,7 +15,7 @@ class LoginController extends Controller
     {
         // If already logged in, redirect to dashboard
         if (Auth::check()) {
-            return redirect()->route('admin.post.index');
+            return redirect()->route('admin.dashboard');
         }
         return view('auth.login'); // resources/views/auth/login.blade.php
     }
@@ -33,7 +33,7 @@ class LoginController extends Controller
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
             // Arahkan ke rute bernama, BUKAN view langsung
-            return redirect()->intended(route('admin.post.index'));
+            return redirect()->intended(route('admin.dashboard'));
             // intended() mengembalikan user ke halaman yang awalnya diminta,
             // atau ke route kita kalau tidak ada halaman sebelumnya.
         }
