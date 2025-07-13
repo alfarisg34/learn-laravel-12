@@ -142,7 +142,7 @@
                             <p>Ingin produk Anda tampil di direktori kami? Daftarkan UMKM Anda sekarang, gratis!</p>
                             <div class="cta-buttons d-flex flex-wrap gap-3">
                                 <a href="#" class="btn text-white px-4 py-3 fs-5"
-                                    style="background-color: #f75815; border-color: #f75815;">
+                                    style="background-color: #436c56; border-color: #436c56;">
                                     Klik Disini!
                                 </a>
 
