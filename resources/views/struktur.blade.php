@@ -15,14 +15,15 @@
                         <div class="card-body">
                             <ol class="list-group list-group-numbered">
                                 <li class="list-group-item">Dewan penasihat : Bapak H .Sudjatmiko ST </li>
-                                <li class="list-group-item">Dewan pembina 1 : Ibu Hj. Kurnia dewi dan mas Rangga</li>
-                                <li class="list-group-item">Dewan pembina 2 : Mas Rangga</li>
-                                <li class="list-group-item">Ketua : Diyan Hikmayati</li>
+                                <li class="list-group-item">Dewan pembina 1 : Ibu Hj. Kurnia dewi </li>
+                                <li class="list-group-item">Dewan pembina 2 : M Rangga</li>
+                                <li class="list-group-item">Ketua Umum : Diyan Hikmayati</li>
                                 <li class="list-group-item">Wakil Ketua : Anita </li>
                                 <li class="list-group-item">Sekretaris 1 : Yeni heryani</li>
                                 <li class="list-group-item">Sekretaris 2 : Seni Suryani </li>
                                 <li class="list-group-item">Bendahara 1 : Mustikawati</li>
-                                <li class="list-group-item">Pelatihan & keterampilan : Tari dan Susanti</li>
+                                <li class="list-group-item">Bendahara 2 : Endah Kurniasih</li>
+                                <li class="list-group-item">Pelatihan dan keterampilan : Pratiwi Ida Lestari dan Susanti</li>
                                 <li class="list-group-item">Ekonomi kreatif dan humas : Windi lestari dan Listy</li>
                             </ol>
                         </div>
